@@ -92,7 +92,7 @@ def get_qr():
 
         # 生成临时二维码
         counter = Counters.query.filter(Counters.id == 1).first()
-        qr_url = f'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={access_token}'
+        qr_url = f'https://api.weixin.qq.com/cgi-bin/qrcode/create?'
         qr_data = {
             'expire_seconds': 2592000,  # 30天有效期
             'action_name': 'QR_STR_SCENE',
