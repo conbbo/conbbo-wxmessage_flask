@@ -81,7 +81,7 @@ def get_qr():
         app_id = 'wx580dad6261cf35c6'
         token_url = f'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={app_id}'
         token_response = requests.get(token_url)
-        access_token = token_response.json().get('access_token') || ''
+        access_token = token_response.json().get('access_token')
 
         # if not access_token:
         #     error_info = {
@@ -111,7 +111,8 @@ def get_qr():
         # 返回二维码信息
         return make_succ_response({
             'ticket': qr_result['ticket'],
-            'url': qr_result['url']
+            'url': qr_result['url'],
+            'access_token': access_token
         })
 
     except Exception as e:
