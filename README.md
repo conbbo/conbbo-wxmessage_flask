@@ -55,6 +55,24 @@
 - `code`：错误码
 - `data`：当前计数值
 
+### `GET /api/getqr`
+获取临时二维码
+
+#### 响应结果
+- `code`：错误码
+- `data`：二维码信息
+  - `ticket`：二维码ticket
+  - `url`：二维码URL
+
+### `POST /api/wx/event`
+处理微信事件推送
+
+#### 请求参数
+- 请求体为XML格式的微信事件推送数据
+
+#### 响应结果
+- 返回字符串 'success'
+
 ##### 响应结果示例
 
 ```json
@@ -94,6 +112,24 @@ curl https://<云托管服务域名>/api/count
 
 - `code`：错误码
 - `data`：当前计数值
+
+### `GET /api/getqr`
+获取临时二维码
+
+#### 响应结果
+- `code`：错误码
+- `data`：二维码信息
+  - `ticket`：二维码ticket
+  - `url`：二维码URL
+
+### `POST /api/wx/event`
+处理微信事件推送
+
+#### 请求参数
+- 请求体为XML格式的微信事件推送数据
+
+#### 响应结果
+- 返回字符串 'success'
 
 ##### 响应结果示例
 
