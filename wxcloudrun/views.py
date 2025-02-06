@@ -84,7 +84,7 @@ def get_qr():
         access_token = token_response.json().get('access_token')
 
         if not access_token:
-            return make_err_response(f'获取access_token失败: {token_response}')
+            return make_err_response('获取access_token失败')
 
         # 生成临时二维码
         qr_url = f'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={access_token}'
