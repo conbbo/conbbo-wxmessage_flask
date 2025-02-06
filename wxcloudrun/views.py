@@ -70,91 +70,91 @@ def get_count():
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
 
 
-@app.route('/api/getqr', methods=['GET'])
-def get_qr():
-    """
-    获取临时二维码
-    :return: 二维码ticket和url
-    """
-    try:
-        # 获取access_token (微信云托管环境下自动鉴权)
-        app_id = 'wx580dad6261cf35c6'
-        token_url = f'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={app_id}'
-        token_response = requests.get(token_url)
-        access_token = token_response.json().get('access_token')
+# @app.route('/api/getqr', methods=['GET'])
+# def get_qr():
+#     """
+#     获取临时二维码
+#     :return: 二维码ticket和url
+#     """
+#     try:
+#         # 获取access_token (微信云托管环境下自动鉴权)
+#         app_id = 'wx580dad6261cf35c6'
+#         token_url = f'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={app_id}'
+#         token_response = requests.get(token_url)
+#         access_token = token_response.json().get('access_token')
 
-        if not access_token:
-            return make_err_response('获取access_token失败')
+#         if not access_token:
+#             return make_err_response('获取access_token失败')
 
-        # 生成临时二维码
-        qr_url = f'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={access_token}'
-        qr_data = {
-            'expire_seconds': 2592000,  # 30天有效期
-            'action_name': 'QR_STR_SCENE',
-            'action_info': {
-                'scene': {
-                    'scene_str': 'test'
-                }
-            }
-        }
-        qr_response = requests.post(qr_url, json=qr_data)
-        qr_result = qr_response.json()
+#         # 生成临时二维码
+#         qr_url = f'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={access_token}'
+#         qr_data = {
+#             'expire_seconds': 2592000,  # 30天有效期
+#             'action_name': 'QR_STR_SCENE',
+#             'action_info': {
+#                 'scene': {
+#                     'scene_str': 'test'
+#                 }
+#             }
+#         }
+#         qr_response = requests.post(qr_url, json=qr_data)
+#         qr_result = qr_response.json()
 
-        if 'ticket' not in qr_result:
-            return make_err_response('生成二维码失败')
+#         if 'ticket' not in qr_result:
+#             return make_err_response('生成二维码失败')
 
-        # 返回二维码信息
-        return make_succ_response({
-            'ticket': qr_result['ticket'],
-            'url': qr_result['url'
-        })
+#         # 返回二维码信息
+#         return make_succ_response({
+#             'ticket': qr_result['ticket'],
+#             'url': qr_result['url'
+#         })
 
-    except Exception as e:
-        return make_err_response(f'获取二维码失败: {str(e)}')
+#     except Exception as e:
+#         return make_err_response(f'获取二维码失败: {str(e)}')
 
 
-@app.route('/api/wx/event', methods=['POST'])
-def handle_wx_event():
-    """
-    处理微信事件推送
-    :return: 返回success的响应
-    """
-    try:
-        # 解析XML消息
-        xml_data = request.data
-        root = ET.fromstring(xml_data)
+# @app.route('/api/wx/event', methods=['POST'])
+# def handle_wx_event():
+#     """
+#     处理微信事件推送
+#     :return: 返回success的响应
+#     """
+#     try:
+#         # 解析XML消息
+#         xml_data = request.data
+#         root = ET.fromstring(xml_data)
         
-        # 获取消息类型
-        msg_type = root.find('MsgType').text
-        if msg_type != 'event':
-            return 'success'
+#         # 获取消息类型
+#         msg_type = root.find('MsgType').text
+#         if msg_type != 'event':
+#             return 'success'
             
-        # 获取事件类型
-        event = root.find('Event').text
-        if event != 'subscribe':
-            return 'success'
+#         # 获取事件类型
+#         event = root.find('Event').text
+#         if event != 'subscribe':
+#             return 'success'
             
-        # 获取用户openid
-        openid = root.find('FromUserName').text
+#         # 获取用户openid
+#         openid = root.find('FromUserName').text
         
-        # 获取场景值
-        event_key = root.find('EventKey')
-        scene_str = 'default'
-        if event_key is not None:
-            # EventKey格式为：qrscene_xxx，需要去掉前缀
-            scene_str = event_key.text.replace('qrscene_', '') if event_key.text else 'default'
+#         # 获取场景值
+#         event_key = root.find('EventKey')
+#         scene_str = 'default'
+#         if event_key is not None:
+#             # EventKey格式为：qrscene_xxx，需要去掉前缀
+#             scene_str = event_key.text.replace('qrscene_', '') if event_key.text else 'default'
         
-        # 保存用户信息
-        user = Users()
-        user.openid = openid
-        user.type = scene_str
-        user.stime = datetime.now()
-        db.session.add(user)
-        db.session.commit()
+#         # 保存用户信息
+#         user = Users()
+#         user.openid = openid
+#         user.type = scene_str
+#         user.stime = datetime.now()
+#         db.session.add(user)
+#         db.session.commit()
         
-        return 'success'
+#         return 'success'
         
-    except Exception as e:
-        # 记录错误但返回success，避免微信服务器重试
-        print(f'处理微信事件失败: {str(e)}')
-        return 'success'
+#     except Exception as e:
+#         # 记录错误但返回success，避免微信服务器重试
+#         print(f'处理微信事件失败: {str(e)}')
+#         return 'success'
