@@ -152,11 +152,11 @@ def handle_wx_event():
         
         # 保存用户信息
         user = Users()
-        user.openid = 'openid'
+        user.openid = root
         user.type = 'scene_str'
         user.stime = datetime.now()
         db.session.add(user)
-        
+
         db.session.commit()
         
         return 'success user'
