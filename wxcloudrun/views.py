@@ -81,7 +81,7 @@ def get_qr():
         app_id = 'wx580dad6261cf35c6'
         token_url = f'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={app_id}'
         token_response = requests.get(token_url)
-        access_token = token_response.json().get('access_token')
+        access_token = token_response.json().get('access_token') || ''
 
         # if not access_token:
         #     error_info = {
@@ -91,13 +91,14 @@ def get_qr():
         #     return make_err_response(f'获取access_token失败，详细信息：{json.dumps(error_info, ensure_ascii=False)}')
 
         # 生成临时二维码
-        qr_url = f'https://api.weixin.qq.com/cgi-bin/qrcode/create?'
+        counter = Counters.query.filter(Counters.id == 1).first()
+        qr_url = f'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token={access_token}'
         qr_data = {
             'expire_seconds': 2592000,  # 30天有效期
             'action_name': 'QR_STR_SCENE',
             'action_info': {
                 'scene': {
-                    'scene_str': 'test'
+                    'scene_str': f'test-{counter.count if counter else 0}'
                 }
             }
         }
@@ -105,7 +106,7 @@ def get_qr():
         qr_result = qr_response.json()
 
         if 'ticket' not in qr_result:
-            return make_err_response(f'生成二维码失败: {json.dumps(qr_response, ensure_ascii=False)}')
+            return make_err_response(f'生成二维码失败: {json.dumps(qr_response.json(), ensure_ascii=False)}')
 
         # 返回二维码信息
         return make_succ_response({
