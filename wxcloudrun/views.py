@@ -86,7 +86,6 @@ def get_qr():
         if not access_token:
             error_info = {
                 'status_code': token_response.status_code,
-                'headers': dict(token_response.headers),
                 'response': token_response.json()
             }
             return make_err_response(f'获取access_token失败，详细信息：{json.dumps(error_info, ensure_ascii=False)}')
