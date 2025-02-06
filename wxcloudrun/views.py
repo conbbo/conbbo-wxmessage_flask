@@ -105,7 +105,7 @@ def get_qr():
         qr_result = qr_response.json()
 
         if 'ticket' not in qr_result:
-            return make_err_response(f'生成二维码失败: {str(qr_response.json())}')
+            return make_err_response(f'生成二维码失败: {json.dumps(qr_response, ensure_ascii=False)}')
 
         # 返回二维码信息
         return make_succ_response({
