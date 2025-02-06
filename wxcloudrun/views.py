@@ -156,6 +156,7 @@ def handle_wx_event():
         user.type = 'scene_str'
         user.stime = datetime.now()
         db.session.add(user)
+        
         db.session.commit()
         
         return 'success user'
